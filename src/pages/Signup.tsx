@@ -19,7 +19,7 @@ const Signup = () => {
                     <Button ButtonTittle="Signup"/>
                     </div>
                 </form>
-                <Button ButtonTittle="Signup"/>
+                
             </div>
     </div>
     )
