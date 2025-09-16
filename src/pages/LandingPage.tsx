@@ -45,42 +45,172 @@ const LandingPage = () => {
         </div>
       </nav>
       <div className="w-[92%] h-[50px] flex flex-row items-center justify-between gap-[20px] ml-[40px]">
-        <div>
-          <Button sx={{ color: "#ACADAE" }}>All</Button>
-          <Button sx={{ color: "#ACADAE" }}>Gaming</Button>
-          <Button sx={{ color: "#ACADAE" }}>Art</Button>
-          <Button sx={{ color: "#ACADAE" }}>PFPs</Button>
-          <Button sx={{ color: "#ACADAE" }}>More</Button>
-        </div>
-        <div>
-          <Button sx={{ color: "white" }} size="small">
+        <div className="gap-[10px] flex flex-row">
+          <Button
+            size="small"
+            variant="outlined"
+            sx={{
+              color: "white",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
             All
           </Button>
-          <Button size="small" sx={{ color: "white" }}>
+          <Button
+            size="small"
+            variant="outlined"
+            sx={{
+              color: "#ACADAE",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
+            Gaming
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            sx={{
+              color: "#ACADAE",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
+            Art
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            sx={{
+              color: "#ACADAE",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
+            PFPs
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            sx={{
+              color: "#ACADAE",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
+            More
+          </Button>
+        </div>
+        <div className="gap-[7px] flex flex-row">
+          <Button
+            size="small"
+            variant="outlined"
+            sx={{
+              color: "white",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
+            All
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            sx={{
+              color: "white",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
             .
           </Button>
-          <Button size="small" sx={{ color: "white" }}>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              color: "white",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
             .
           </Button>
-          <Button size="small" sx={{ color: "white" }}>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              color: "white",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
             .
           </Button>
-          <Button size="small" sx={{ color: "white" }}>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              color: "white",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
             .
           </Button>
-          <Button size="small" sx={{ color: "white" }}>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              color: "white",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
             .
           </Button>
-          <Button size="small" sx={{ color: "white" }}>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              color: "white",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
             .
           </Button>
-          <Button size="small" sx={{ color: "white" }}>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              color: "white",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
             .
           </Button>
-          <Button size="small" sx={{ color: "white" }}>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              color: "white",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
             ...
           </Button>
-          <Button size="small" sx={{ color: "white" }}>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              color: "white",
+              borderColor: "gray",
+              backgroundColor: "#101011",
+            }}
+          >
             .
           </Button>
         </div>
@@ -120,7 +250,9 @@ const LandingPage = () => {
         <h1 className="text-[25px] font-[600] ml-[40px]">
           Featured Collections
         </h1>
-        <span>This week's curated collections</span>
+        <span className="text-[14px] font-[500] ml-[40px] text-[#8a8b8d]">
+          This week's curated collections
+        </span>
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           spaceBetween={16}
