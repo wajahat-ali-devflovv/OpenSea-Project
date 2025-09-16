@@ -20,7 +20,7 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
 const LandingPage = () => {
   return (
-    <div className="flex flex-col w-[100%] h-screen flex text-white  bg-[#000000]">
+    <div className="flex flex-col w-[100%] h-screen flex text-white  bg-[#101011]">
       <nav className=" flex w-[97%] h-[65px] sticky right-0 align-center py-[10px]  ">
         <div className="header w-[98%] flex flex-row justify-between    text-[14px]  ml-[40px] ">
           <div className=" w-[60%] h-[45px] flex flex-row    ">
@@ -46,11 +46,11 @@ const LandingPage = () => {
       </nav>
       <div className="w-[92%] h-[50px] flex flex-row items-center justify-between gap-[20px] ml-[40px]">
         <div>
-          <Button sx={{ color: "white" }}>All</Button>
-          <Button sx={{ color: "white" }}>Gaming</Button>
-          <Button sx={{ color: "white" }}>Art</Button>
-          <Button sx={{ color: "white" }}>PFPs</Button>
-          <Button sx={{ color: "white" }}>More</Button>
+          <Button sx={{ color: "#ACADAE" }}>All</Button>
+          <Button sx={{ color: "#ACADAE" }}>Gaming</Button>
+          <Button sx={{ color: "#ACADAE" }}>Art</Button>
+          <Button sx={{ color: "#ACADAE" }}>PFPs</Button>
+          <Button sx={{ color: "#ACADAE" }}>More</Button>
         </div>
         <div>
           <Button sx={{ color: "white" }} size="small">
@@ -94,6 +94,7 @@ const LandingPage = () => {
           pagination={{ clickable: true }}
           autoplay={{ delay: 8000 }}
           loop={true}
+          className="custom-swiper"
         >
           <SwiperSlide>
             <img src={slideImage1} alt="" />
@@ -116,15 +117,19 @@ const LandingPage = () => {
         </Swiper>
       </div>
       <div>
-        <h1 className="text-[25px] font-[600] ml-[40px]">Fe</h1>
+        <h1 className="text-[25px] font-[600] ml-[40px]">
+          Featured Collections
+        </h1>
+        <span>This week's curated collections</span>
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
-          spaceBetween={0}
+          spaceBetween={16}
           slidesPerView={5}
           navigation
           pagination={{ clickable: true }}
           autoplay={{ delay: 8000 }}
           loop={true}
+          className="nft-slider custom-swiper"
         >
           <SwiperSlide>
             <img src={slideImage1} alt="" />
