@@ -3,6 +3,7 @@ import Button1 from "../components/Button";
 import InputField from "../components/InputField";
 import userIcon from "../assets/icons/icons8-user-16.png";
 import Button from "@mui/material/Button";
+import Icon from "@mui/material/Icon";
 import ButtonComp from "../components/Button";
 import { Swiper, SwiperSlide } from "swiper/react";
 import slideImage1 from "../assets/images/slider1.jpg";
@@ -14,11 +15,39 @@ import slideImage3 from "../assets/images/slider3.jpeg";
 import "swiper/css"; // core Swiper styles
 import "swiper/css/navigation"; // optional
 import "swiper/css/pagination"; // optional
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCollectionsRequest } from "../store/actions/collectionsActions";
+import type { RootState } from "../store/store";
 
 // import modules
+
+const categories = ["gaming", "art", "pfps", "more"];
+const icons = ["🔥", "🎨", "🎮", "💎", "⚡", "🛠️"];
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+
+  const handleSlideClick = (collectionName: string) => {
+    navigate(`/nfts/${collectionName}`);
+  };
+
+  const dispatch = useDispatch();
+
+  const {
+    items: collections,
+    loading,
+    error,
+  } = useSelector((state: RootState) => state.collections);
+
+  useEffect(() => {
+    dispatch(fetchCollectionsRequest());
+  }, [dispatch]);
+
+  if (loading) return <p className="text-white">Loading collections...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
   return (
     <div className="flex flex-col w-[100%] h-screen flex text-white  bg-[#101011]">
       <nav className=" flex w-[97%] h-[65px] sticky right-0 align-center py-[10px]  ">
@@ -30,16 +59,12 @@ const LandingPage = () => {
             />
           </div>
           <div className=" flex flex-row    text-[14px] gap-[15px]   ">
-            <button className=" w-[132px] h-[40px]  text-[#ffffff] font-[500] text-[14px] rounded-[7px]  ">
-              Connect Wallet
-            </button>
-            <a className="w-[40px] h-[40px] flex p-[5px] " href="">
-              <img
-                className="flex self-center w-[17px] h-[17px] rounded-[9px] outline-[1px] outline-white "
-                src={userIcon}
-                alt=""
-              />
-            </a>{" "}
+            <Button sx={{ color: "white", font: "bold" }}>
+              signUp / Login
+            </Button>
+            <Button>
+              <ShoppingCartIcon sx={{ color: "white" }} />
+            </Button>{" "}
             {/* correct icon alignment*/}
           </div>
         </div>
@@ -57,50 +82,24 @@ const LandingPage = () => {
           >
             All
           </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            sx={{
-              color: "#ACADAE",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            Gaming
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            sx={{
-              color: "#ACADAE",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            Art
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            sx={{
-              color: "#ACADAE",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            PFPs
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            sx={{
-              color: "#ACADAE",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            More
-          </Button>
+          <div style={{ display: "flex", gap: "10px" }}>
+            {categories.map((cat) => (
+              <Button
+                key={cat}
+                size="small"
+                variant="outlined"
+                sx={{
+                  color: "#ACADAE",
+                  borderColor: "gray",
+                  backgroundColor: "#101011",
+                }}
+              >
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}{" "}
+                {/*
+                onClick={() => navigate(`/category/${cat}`)}*/}
+              </Button>
+            ))}
+          </div>
         </div>
         <div className="gap-[7px] flex flex-row">
           <Button
@@ -114,105 +113,24 @@ const LandingPage = () => {
           >
             All
           </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            sx={{
-              color: "white",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            .
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{
-              color: "white",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            .
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{
-              color: "white",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            .
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{
-              color: "white",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            .
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{
-              color: "white",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            .
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{
-              color: "white",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            .
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{
-              color: "white",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            .
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{
-              color: "white",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            ...
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{
-              color: "white",
-              borderColor: "gray",
-              backgroundColor: "#101011",
-            }}
-          >
-            .
-          </Button>
+          <div style={{ display: "flex", gap: "10px" }}>
+            {icons.map((icon: any) => (
+              <Button
+                key={icon}
+                size="small"
+                variant="outlined"
+                sx={{
+                  color: "#ACADAE",
+                  borderColor: "gray",
+                  backgroundColor: "#101011",
+                }}
+              >
+                {icon}{" "}
+                {/*
+                onClick={() => navigate(`/category/${cat}`)}*/}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
       <div>
@@ -254,33 +172,41 @@ const LandingPage = () => {
           This week's curated collections
         </span>
         <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
+          modules={[Navigation]}
           spaceBetween={16}
           slidesPerView={5}
           navigation
           pagination={{ clickable: true }}
           autoplay={{ delay: 8000 }}
           loop={true}
+          breakpoints={{
+            640: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
+            1024: { slidesPerView: 5 },
+          }}
           className="nft-slider custom-swiper"
         >
-          <SwiperSlide>
-            <img src={slideImage1} alt="" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={slideImage2} alt="" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={slideImage3} alt="" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={slideImage2} alt="" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={slideImage1} alt="" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={slideImage3} alt="" />
-          </SwiperSlide>
+          {collections.map(
+            (collection) => (
+              console.log(JSON.stringify(collection.path)),
+              (
+                <SwiperSlide
+                  key={collection.id}
+                  onClick={() =>
+                    navigate(`/nfts/collections/${collection.id}/nfts`)
+                  }
+                  style={{ cursor: "pointer" }}
+                >
+                  <img
+                    src={collection.image_path || slideImage1}
+                    alt={collection.name}
+                    className="w-full h-[200px] object-cover rounded-lg"
+                  />
+                  <p className="text-center mt-2">{collection.name}</p>
+                </SwiperSlide>
+              )
+            )
+          )}{" "}
         </Swiper>
       </div>
     </div>

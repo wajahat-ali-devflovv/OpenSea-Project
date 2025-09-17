@@ -14,6 +14,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/nft" element={<NFTList />} />
+        <Route
+          path="/nfts/collections/:collectionId/nfts"
+          element={<NFTList />}
+        />
       </Routes>
     </>
   );
