@@ -17,14 +17,37 @@ import "swiper/css/navigation"; // optional
 import "swiper/css/pagination"; // optional
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCollectionsRequest } from "../store/actions/collectionsActions";
+import type { RootState } from "../store/store";
 
 // import modules
 
 const categories = ["gaming", "art", "pfps", "more"];
+const icons = ["🔥", "🎨", "🎮", "💎", "⚡", "🛠️"];
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
 const LandingPage = () => {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
+
+  const handleSlideClick = (collectionName: string) => {
+    navigate(`/nfts/${collectionName}`);
+  };
+
+  const dispatch = useDispatch();
+
+  const {
+    items: collections,
+    loading,
+    error,
+  } = useSelector((state: RootState) => state.collections);
+
+  useEffect(() => {
+    dispatch(fetchCollectionsRequest());
+  }, [dispatch]);
+
+  if (loading) return <p className="text-white">Loading collections...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
   return (
     <div className="flex flex-col w-[100%] h-screen flex text-white  bg-[#101011]">
       <nav className=" flex w-[97%] h-[65px] sticky right-0 align-center py-[10px]  ">
@@ -149,7 +172,7 @@ const LandingPage = () => {
           This week's curated collections
         </span>
         <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
+          modules={[Navigation]}
           spaceBetween={16}
           slidesPerView={5}
           navigation
@@ -163,24 +186,27 @@ const LandingPage = () => {
           }}
           className="nft-slider custom-swiper"
         >
-          <SwiperSlide>
-            <img src={slideImage1} alt="" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={slideImage2} alt="" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={slideImage3} alt="" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={slideImage2} alt="" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={slideImage1} alt="" />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={slideImage3} alt="" />
-          </SwiperSlide>
+          {collections.map(
+            (collection) => (
+              console.log(JSON.stringify(collection.path)),
+              (
+                <SwiperSlide
+                  key={collection.id}
+                  onClick={() =>
+                    navigate(`/nfts/collections/${collection.id}/nfts`)
+                  }
+                  style={{ cursor: "pointer" }}
+                >
+                  <img
+                    src={collection.image_path || slideImage1}
+                    alt={collection.name}
+                    className="w-full h-[200px] object-cover rounded-lg"
+                  />
+                  <p className="text-center mt-2">{collection.name}</p>
+                </SwiperSlide>
+              )
+            )
+          )}{" "}
         </Swiper>
       </div>
     </div>

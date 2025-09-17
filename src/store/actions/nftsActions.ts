@@ -3,7 +3,10 @@ import {
   FETCH_NFTS_SUCCESS,
   FETCH_NFTS_FAILURE,
 } from "../const";
-export const fetchNftsRequest = () => ({ type: FETCH_NFTS_REQUEST });
+export const fetchNftsRequest = (collection: string) => ({
+  type: FETCH_NFTS_REQUEST,
+  payload: collection,
+});
 export const fetchNftsSuccess = (nfts: any[]) => ({
   type: FETCH_NFTS_SUCCESS,
   payload: nfts,
