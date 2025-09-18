@@ -9,9 +9,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import slideImage1 from "../assets/images/slider1.jpg";
 import slideImage2 from "../assets/images/slider2.png";
 import slideImage3 from "../assets/images/slider3.jpeg";
-//import slideImage4 from "../assets/images/slider4.jpg";
-//import slideImage5 from "../assets/images/slider5.jpg";
-//import slideImage6 from "../assets/images/slider6.jpg";
 import "swiper/css"; // core Swiper styles
 import "swiper/css/navigation"; // optional
 import "swiper/css/pagination"; // optional
@@ -19,6 +16,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCollectionsRequest } from "../store/actions/collectionsActions";
+import { logoutSuccess } from "../store/actions/authActions";
 import type { RootState } from "../store/store";
 
 // import modules
@@ -34,6 +32,13 @@ const LandingPage = () => {
     navigate(`/nfts/${collectionName}`);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    dispatch(logoutSuccess()); // Clear Redux state
+    navigate("/login");
+  };
+
   const dispatch = useDispatch();
 
   const {
@@ -42,8 +47,11 @@ const LandingPage = () => {
     error,
   } = useSelector((state: RootState) => state.collections);
 
+  const { user } = useSelector((state: RootState) => state.auth);
+
   useEffect(() => {
     dispatch(fetchCollectionsRequest());
+    console.log(user);
   }, [dispatch]);
 
   if (loading) return <p className="text-white">Loading collections...</p>;
@@ -59,12 +67,31 @@ const LandingPage = () => {
             />
           </div>
           <div className=" flex flex-row    text-[14px] gap-[15px]   ">
-            <Button sx={{ color: "white", font: "bold" }}>
-              signUp / Login
-            </Button>
-            <Button>
-              <ShoppingCartIcon sx={{ color: "white" }} />
-            </Button>{" "}
+            {user ? (
+              <>
+                <span>Welcome, {user.username}</span>
+                <Button
+                  onClick={handleLogout}
+                  variant="outlined"
+                  color="inherit"
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={() => navigate("/login")}
+                  variant="outlined"
+                  color="inherit"
+                >
+                  Login
+                </Button>
+                <Button>
+                  <ShoppingCartIcon sx={{ color: "white" }} />
+                </Button>{" "}
+              </>
+            )}
             {/* correct icon alignment*/}
           </div>
         </div>

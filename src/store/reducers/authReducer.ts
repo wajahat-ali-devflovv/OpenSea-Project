@@ -14,10 +14,13 @@ interface AuthState {
   error: string | null;
 }
 
+const savedUser = localStorage.getItem("user");
+const savedToken = localStorage.getItem("token");
+
 const initialState: AuthState = {
   loading: false,
-  user: null,
-  token: null,
+  user: savedUser ? JSON.parse(savedUser) : null,
+  token: savedToken || null,
   error: null,
 };
 
@@ -39,6 +42,15 @@ export const authReducer = (state = initialState, action: any): AuthState => {
     case SIGNUP_FAILURE:
     case LOGIN_FAILURE:
       return { ...state, loading: false, error: action.payload };
+
+    case "LOGOUT_SUCCESS": // Add logout case
+      return {
+        ...state,
+        user: null,
+        token: null,
+        error: null,
+        loading: false,
+      };
 
     default:
       return state;

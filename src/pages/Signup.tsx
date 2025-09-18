@@ -7,8 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { signupRequest } from "../store/actions/authActions";
 import type { RootState } from "../store/store";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,6 +38,7 @@ const Signup = () => {
             label="Standard"
             variant="standard"
             placeholder="Email"
+            fullWidth
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -48,6 +51,7 @@ const Signup = () => {
             label="Standard"
             variant="standard"
             placeholder="Email"
+            fullWidth
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -61,21 +65,33 @@ const Signup = () => {
             type="password"
             placeholder="Password"
             value={password}
+            fullWidth
             onChange={(e) => setPassword(e.target.value)}
           />
           <br />
           <div className="w-[100%] flex justify-center p-[5px]">
-            <Button disabled={loading} onClick={handleSignup}>
+            <Button
+              variant="outlined"
+              disabled={loading}
+              onClick={handleSignup}
+            >
               Sign Up
             </Button>
             {error && <p className="text-red-500">{error}</p>}
             {user && (
               <p className="text-green-500">
-                Signup successful! Wellcome,{user.username}
+                Signup successful! Welcome,{user.username}
               </p>
             )}
           </div>
         </form>
+        <Button
+          variant="outlined"
+          size="medium"
+          onClick={() => navigate("/login")}
+        >
+          Sign In
+        </Button>
       </div>
     </div>
   );

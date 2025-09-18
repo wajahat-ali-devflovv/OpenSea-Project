@@ -7,12 +7,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import slideImage1 from "../assets/images/slider1.jpg";
 import slideImage2 from "../assets/images/slider2.png";
 import slideImage3 from "../assets/images/slider3.jpeg";
-//import slideImage4 from "../assets/images/slider4.jpg";
-//import slideImage5 from "../assets/images/slider5.jpg";
-//import slideImage6 from "../assets/images/slider6.jpg";
 import "swiper/css"; // core Swiper styles
 import "swiper/css/navigation"; // optional
 import "swiper/css/pagination"; // optional
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import Button from "@mui/material/Button";
 
 function NFTList() {
   const { collectionId } = useParams(); // 👈 from /collections/:collectionId/nfts
@@ -35,6 +34,19 @@ function NFTList() {
 
   return (
     <div>
+      <nav className=" flex w-[97%] h-[65px] sticky right-0 align-center py-[10px]  ">
+        <div className="header w-[98%] flex flex-row justify-between    text-[14px]  ml-[40px] ">
+          <div className=" flex flex-row    text-[14px] gap-[15px] fixed right-5  ">
+            <>
+              <Button>
+                <ShoppingCartIcon sx={{ color: "white" }} />
+              </Button>{" "}
+            </>
+
+            {/* correct icon alignment*/}
+          </div>
+        </div>
+      </nav>
       <div>
         <Swiper
           spaceBetween={0}

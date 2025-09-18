@@ -35,6 +35,11 @@ function* loginSaga(action: any): any {
     const { email, password } = action.payload;
     const data = yield call(loginApi, email, password);
 
+    // ✅ Save token to localStorage
+    localStorage.setItem("token", data.token);
+    //  user to localStorage
+    localStorage.setItem("user", JSON.stringify(data.user)); // Add this line
+
     yield put(loginSuccess(data.user, data.token));
   } catch (error: any) {
     yield put(loginFailure(error.response?.data?.detail || "Login failed"));
