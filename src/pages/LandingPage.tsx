@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCollectionsRequest } from "../store/actions/collectionsActions";
 import { logoutSuccess } from "../store/actions/authActions";
 import type { RootState } from "../store/store";
+import AddIcon from "@mui/icons-material/Add";
 
 // import modules
 
@@ -62,7 +63,7 @@ const LandingPage = () => {
         <div className="header w-[98%] flex flex-row justify-between    text-[14px]  ml-[40px] ">
           <div className=" w-[60%] h-[45px] flex flex-row    ">
             <input
-              className={`border-1 border-black bg-[#050505] rounded-md font-[600] pl-1 w-[40%]  shadow-sm shadow-white`}
+              className={`border-1 border-black bg-[#050505] rounded-md font-[600] pl-1 w-[40%]  shadow-sm shadow-white hidden md:block`}
               placeholder="Search OpenSea"
             />
           </div>
@@ -97,7 +98,7 @@ const LandingPage = () => {
         </div>
       </nav>
       <div className="w-[92%] h-[50px] flex flex-row items-center justify-between gap-[20px] ml-[40px]">
-        <div className="gap-[10px] flex flex-row">
+        <div className="md:gap-[10px] flex flex-row gap-[5px]">
           <Button
             size="small"
             variant="outlined"
@@ -109,11 +110,10 @@ const LandingPage = () => {
           >
             All
           </Button>
-          <div style={{ display: "flex", gap: "10px" }}>
+          <div className="flex flex-row gap-[10px] hidden sm:flex">
             {categories.map((cat) => (
               <Button
                 key={cat}
-                size="small"
                 variant="outlined"
                 sx={{
                   color: "#ACADAE",
@@ -128,7 +128,7 @@ const LandingPage = () => {
             ))}
           </div>
         </div>
-        <div className="gap-[7px] flex flex-row">
+        <div className="gap-[7px] flex flex-row w-[10%] justify-end">
           <Button
             size="small"
             variant="outlined"
@@ -136,11 +136,12 @@ const LandingPage = () => {
               color: "white",
               borderColor: "gray",
               backgroundColor: "#101011",
+              marginRight: { xs: "35px", md: "10px" },
             }}
           >
             All
           </Button>
-          <div style={{ display: "flex", gap: "10px" }}>
+          <div className=" flex-row gap-[10px] hidden sm:flex">
             {icons.map((icon: any) => (
               <Button
                 key={icon}
@@ -192,12 +193,38 @@ const LandingPage = () => {
         </Swiper>
       </div>
       <div>
-        <h1 className="text-[25px] font-[600] ml-[40px]">
-          Featured Collections
-        </h1>
-        <span className="text-[14px] font-[500] ml-[40px] text-[#8a8b8d]">
-          This week's curated collections
-        </span>
+        <div className="flex flex-row justify-between  items-center mt-[20px] mb-[10px] mr-[40px] ">
+          <div>
+            <h1 className="sm:text-[25px] font-[600] ml-[40px]">
+              Featured Collections
+            </h1>
+            <span className="text-[6px] sm:text-[14px] font-[500] ml-[40px] text-[#8a8b8d]">
+              This week's curated collections
+            </span>
+          </div>
+          <div className="w-20% flex justify-end">
+            {" "}
+            {user?.role === "admin" && ( // 👈 Only show if admin
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddIcon />}
+                size="small"
+                sx={{
+                  fontSize: { xs: "0.5rem", sm: "0.7rem", md: "1rem" },
+                  padding: { xs: "4px 8px", sm: "6px 12px", md: "8px 16px" },
+                  width: { xs: "80px", sm: "100px", md: "180px" },
+                  height: { xs: "30px", sm: "35px", md: "60px" },
+                }}
+                onClick={() => {
+                  navigate("/add-collection");
+                }}
+              >
+                Add Collection
+              </Button>
+            )}
+          </div>
+        </div>
         <Swiper
           modules={[Navigation]}
           spaceBetween={16}

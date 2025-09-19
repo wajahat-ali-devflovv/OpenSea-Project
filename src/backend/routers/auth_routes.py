@@ -25,8 +25,10 @@ def signup(
         user = cur.fetchone()
         conn.commit()
 
-        token = create_access_token({"sub": str(user["id"])})
-        return {"token": token, "user": user}
+        token = create_access_token({
+    "sub": str(user["id"]),
+    "role": user["role"]
+})
 
 @router.post("/login")
 def login(email: str = Form(...), password: str = Form(...)):
@@ -37,7 +39,10 @@ def login(email: str = Form(...), password: str = Form(...)):
         if not user or not verify_password(password, user["password_hash"]):
             raise HTTPException(status_code=401, detail="Invalid email or password")
 
-        token = create_access_token({"sub": str(user['id'])})
+        token = create_access_token({
+    "sub": str(user["id"]),
+    "role": user["role"]
+})
         return {
             "token": token,
             "user": {
