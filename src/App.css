@@ -2,6 +2,7 @@
 
 :root {
   background-color: #101011;
+  width: 100%;
 }
 
 .swiper {
@@ -16,39 +17,35 @@
   height: 100%;
   object-fit: fill;
   border-radius: 12px;
+  opacity: 0.7;
 }
 .custom-swiper .swiper-button-prev {
-  background-color: #1b1d1f;
-  border-radius: 50%; /* circular */
-  width: 50px;
-  height: 50px;
-
   /* center the arrow inside */
   display: flex;
   align-items: center;
   justify-content: center;
 
   color: #ffffff; /* arrow color */
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 20px !important; /* increase/decrease arrow size */
+  height: 20px;
+  width: 30px;
 }
 .custom-swiper .swiper-button-next {
-  background-color: #1b1d1f;
-  border-radius: 50%; /* circular */
-  width: 50px;
-  height: 50px;
-
   /* center the arrow inside */
   display: flex;
   align-items: center;
   justify-content: center;
 
   color: #ffffff; /* arrow color */
-  font-weight: bold;
-  font-size: 10px;
+  font-weight: 600;
+  font-size: 20px !important; /* increase/decrease arrow size */
+  height: 20px;
+  width: 30px;
 }
 .custom-swiper .swiper-button-next::after,
 .custom-swiper .swiper-button-prev::after {
-  font-size: 10px; /* increase/decrease arrow size */
+  font-size: 28px; /* increase/decrease arrow size */
   font-weight: bold;
   color: #ffffff !important; /* arrow color */
 }
