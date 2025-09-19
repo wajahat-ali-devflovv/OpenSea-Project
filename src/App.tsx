@@ -7,6 +7,7 @@ import LandingPage from "./pages/LandingPage";
 import NFTList from "./pages/NftList";
 import AddCollection from "./pages/Addcollection";
 import Sidebar from "./pages/Sidebar";
+import Cart from "./pages/Cart";
 
 function App() {
   const location = useLocation();
@@ -29,6 +30,7 @@ function App() {
             path="/nfts/collections/:collectionId/nfts"
             element={<NFTList />}
           />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/add-collection" element={<AddCollection />} />{" "}
           {/* admin only */}
         </Routes>

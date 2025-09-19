@@ -61,7 +61,7 @@ const LandingPage = () => {
     <div className="flex flex-col w-[100%] h-screen flex text-white  bg-[#101011]">
       <nav className=" flex w-[97%] h-[65px] sticky right-0 align-center py-[10px]  ">
         <div className="header w-[98%] flex flex-row justify-between    text-[14px]  ml-[40px] ">
-          <div className=" w-[60%] h-[45px] flex flex-row    ">
+          <div className=" w-[70%] h-[45px] flex flex-row    ">
             <input
               className={`border-1 border-black bg-[#050505] rounded-md font-[600] pl-1 w-[40%]  shadow-sm shadow-white hidden md:block`}
               placeholder="Search OpenSea"
@@ -70,11 +70,17 @@ const LandingPage = () => {
           <div className=" flex flex-row    text-[14px] gap-[15px]   ">
             {user ? (
               <>
-                <span>Welcome, {user.username}</span>
+                <span className="align-center">
+                  Welcome,{" "}
+                  <span className="text-purple-600 text-[24px] font-[600]">
+                    {user.username}
+                  </span>{" "}
+                </span>
                 <Button
                   onClick={handleLogout}
                   variant="outlined"
                   color="inherit"
+                  sx={{ borderColor: "gray" }}
                 >
                   Logout
                 </Button>

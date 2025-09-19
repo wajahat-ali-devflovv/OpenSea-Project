@@ -30,6 +30,7 @@ import { nftValidationSchema } from "../validations/nftSchema";
 
 function NFTList() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const [cartItems, setCartItems] = useState<any[]>([0]); // State for cart items
   const { collectionId } = useParams(); // 👈 from /collections/:collectionId/nfts
   const dispatch = useDispatch();
   const { items, loading, error } = useSelector(
@@ -47,6 +48,7 @@ function NFTList() {
   });
 
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (collectionId) {
@@ -191,8 +193,16 @@ function NFTList() {
         <div className="header w-[98%] flex flex-row justify-between    text-[14px]  ml-[40px] ">
           <div className=" flex flex-row    text-[14px] gap-[15px] fixed right-5  ">
             <>
-              <Button>
+              <Button
+                className="relative"
+                onClick={() => {
+                  navigate("/cart");
+                }}
+              >
                 <ShoppingCartIcon sx={{ color: "white" }} />
+                <span className="absolute bottom-0 right-[15px] text-red-600 ">
+                  {cartItems}
+                </span>
               </Button>{" "}
             </>
 
@@ -215,23 +225,27 @@ function NFTList() {
       </div>
       <div>
         <div>
-          <h1 className="text-[25px] font-[600] ml-[40px] text-white">
-            Featured NFTs
-          </h1>
-          <span className="text-[14px] font-[500] ml-[40px] text-[#8a8b8d]">
-            This week's NFT's collections
-          </span>
-          {/* 👑 Admin Add Button */}
-          {user?.role === "admin" && (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleOpen()}
-              style={{ marginBottom: "20px" }}
-            >
-              + Add NFT
-            </Button>
-          )}
+          <div className="flex flex-row justify-between  items-center mt-[20px] mb-[10px] mr-[40px] ">
+            <div>
+              <h1 className="text-[25px] font-[600] ml-[40px] text-white">
+                Featured NFTs
+              </h1>
+              <span className="text-[14px] font-[500] ml-[40px] text-[#8a8b8d]">
+                This week's NFT's collections
+              </span>
+            </div>
+            {/* 👑 Admin Add Button */}
+            {user?.role === "admin" && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleOpen()}
+                style={{ marginBottom: "20px" }}
+              >
+                + Add NFT
+              </Button>
+            )}
+          </div>
 
           <div
             style={{
