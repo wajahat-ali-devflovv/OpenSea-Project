@@ -1,4 +1,3 @@
-import { useFormik } from "formik";
 import * as Yup from "yup";
 export const nftValidationSchema = Yup.object({
   name: Yup.string().required("Name is required"),

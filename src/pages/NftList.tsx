@@ -30,7 +30,7 @@ import { nftValidationSchema } from "../validations/nftSchema";
 
 function NFTList() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const [cartItems, setCartItems] = useState<any[]>([0]); // State for cart items
+  const cartItems = useSelector((state: RootState) => state.cart.items) || [0];
   const { collectionId } = useParams(); // 👈 from /collections/:collectionId/nfts
   const dispatch = useDispatch();
   const { items, loading, error } = useSelector(
@@ -189,7 +189,7 @@ function NFTList() {
 
   return (
     <div>
-      <nav className=" flex w-[97%] h-[65px] sticky right-0 align-center py-[10px]  ">
+      <nav className="fixed z-[100] flex w-[97%] h-[65px] relative right-0 align-center py-[10px]  ">
         <div className="header w-[98%] flex flex-row justify-between    text-[14px]  ml-[40px] ">
           <div className=" flex flex-row    text-[14px] gap-[15px] fixed right-5  ">
             <>
@@ -200,8 +200,8 @@ function NFTList() {
                 }}
               >
                 <ShoppingCartIcon sx={{ color: "white" }} />
-                <span className="absolute bottom-0 right-[15px] text-red-600 ">
-                  {cartItems}
+                <span className="absolute bottom-0 right-[15px] text-purple-600 font-bold">
+                  {cartItems.length}
                 </span>
               </Button>{" "}
             </>
@@ -271,8 +271,32 @@ function NFTList() {
                   <b>Price:</b> {nft.price} ETH
                 </p>
                 <p>
-                  <b>Status:</b> {nft.status}
+                  <b>Status:</b>
+                  <span
+                    className={
+                      nft.status === "sold"
+                        ? "text-red-500 font-[600] text-[20px] ml-1"
+                        : ""
+                    }
+                  >
+                    {nft.status}
+                  </span>
                 </p>
+
+                {/* 🛒 Add to Cart (only for logged-in non-admin users and if available) */}
+                {user?.role === "user" && nft.status === "available" && (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    size="small"
+                    style={{ width: "100%" }}
+                    onClick={() => {
+                      dispatch({ type: "ADD_TO_CART", payload: nft });
+                    }}
+                  >
+                    Add to Cart
+                  </Button>
+                )}
 
                 {/* 👑 Admin Edit/Delete */}
                 {user?.role === "admin" && (

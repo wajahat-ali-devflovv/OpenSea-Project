@@ -7,6 +7,7 @@ import { collectionsSaga } from "./sagas/collectionsSaga";
 import { collectionsReducer } from "./reducers/collectionsReducers";
 import { authSaga } from "./sagas/authSaga";
 import { authReducer } from "./reducers/authReducer";
+import { cartReducer } from "./reducers/cartReducer";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   nfts: nftReducer,
   collections: collectionsReducer,
   auth: authReducer,
+  cart: cartReducer,
 });
 
 function* rootSaga() {
