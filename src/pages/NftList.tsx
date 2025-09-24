@@ -1,25 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { fetchNftsRequest } from "../store/actions/nftsActions";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  fetchNftsRequest,
+  addNftRequest,
+  updateNftRequest,
+  deleteNftRequest,
+} from "../store/actions/nftsActions";
 import type { RootState } from "../store/store";
 import { Swiper, SwiperSlide } from "swiper/react";
-import slideImage1 from "../assets/images/slider1.jpg";
 import slideImage2 from "../assets/images/slider2.png";
-import slideImage3 from "../assets/images/slider3.jpeg";
-import "swiper/css"; // core Swiper styles
-import "swiper/css/navigation"; // optional
-import "swiper/css/pagination"; // optional
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import {
-  ADD_NFT_REQUEST,
-  UPDATE_NFT_REQUEST,
-  DELETE_NFT_REQUEST,
-} from "../store/const";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
-import AddIcon from "@mui/icons-material/Add";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -27,15 +19,30 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useFormik } from "formik";
 import { nftValidationSchema } from "../validations/nftSchema";
+import {
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormHelperText,
+} from "@mui/material";
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Typography,
+} from "@mui/material";
 
 function NFTList() {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  //const user = JSON.parse(localStorage.getItem("user") || "{}");
   const cartItems = useSelector((state: RootState) => state.cart.items) || [0];
-  const { collectionId } = useParams(); // 👈 from /collections/:collectionId/nfts
+  const { collectionId } = useParams();
   const dispatch = useDispatch();
   const { items, loading, error } = useSelector(
     (state: RootState) => state.nfts
   );
+  const { user } = useSelector((state: RootState) => state.auth);
+
   const [open, setOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selectedNFT, setSelectedNFT] = useState<any>(null);
@@ -46,17 +53,12 @@ function NFTList() {
     status: "",
     image: null as File | null,
   });
+  // Add local state to track when to refresh the list
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (collectionId) {
-      dispatch(fetchNftsRequest(collectionId));
-    }
-  }, [dispatch, collectionId]);
-
-  // 📝 Handle input changes
   const handleOpen = (nft?: any) => {
     if (nft) {
       setEditMode(true);
@@ -66,7 +68,7 @@ function NFTList() {
         description: nft.description,
         price: nft.price,
         status: nft.status,
-        image: null,
+        image: nft.image,
       });
     } else {
       setEditMode(false);
@@ -81,332 +83,341 @@ function NFTList() {
     setOpen(true);
   };
 
-  // 📝 Handle close
   const handleClose = () => {
     setOpen(false);
     setSelectedNFT(null);
   };
 
-  // 📝 Handle form submit
-  const handleSubmit = () => {
-    const payload = new FormData();
-    payload.append("name", formData.name);
-    payload.append("description", formData.description);
-    payload.append("price", formData.price);
-    payload.append("status", formData.status);
-    if (formData.image) payload.append("image", formData.image);
-
-    if (editMode && selectedNFT) {
-      dispatch({
-        type: UPDATE_NFT_REQUEST,
-        payload: { nftId: selectedNFT.id, nftData: payload, token },
-      });
-    } else {
-      dispatch({
-        type: ADD_NFT_REQUEST,
-        payload: { collectionId, nftData: payload, token },
-      });
-    }
-
-    handleClose();
-  };
-
-  // 🗑 Delete NFT
   const handleDelete = (nftId: number) => {
     if (window.confirm("Are you sure you want to delete this NFT?")) {
-      dispatch({
-        type: DELETE_NFT_REQUEST,
-        payload: { nftId, token },
-      });
+      if (token) {
+        dispatch(deleteNftRequest(nftId.toString(), token));
+        //
+        setRefreshTrigger((prev) => prev + 1);
+      }
     }
   };
 
   const formik = useFormik({
     initialValues: {
-      name: formData.name,
-      description: formData.description,
-      price: formData.price,
-      status: formData.status,
+      name: selectedNFT?.name || "",
+      description: selectedNFT?.description || "",
+      price: selectedNFT?.price || "",
+      status: selectedNFT?.status || "",
+      image: null, // <-- keep image in formik state
     },
-    validationSchema: nftValidationSchema,
-    enableReinitialize: true, // re-fill values when editing
+    validationSchema: nftValidationSchema(editMode),
+    enableReinitialize: true,
     onSubmit: (values) => {
       const payload = new FormData();
       payload.append("name", values.name);
       payload.append("description", values.description);
       payload.append("price", values.price);
       payload.append("status", values.status);
-      if (formData.image) payload.append("image", formData.image);
+      if (values.image) {
+        payload.append("image", values.image);
+      }
+
+      if (!token) return;
 
       if (editMode && selectedNFT) {
-        dispatch({
-          type: UPDATE_NFT_REQUEST,
-          payload: { nftId: selectedNFT.id, nftData: payload, token },
-        });
+        dispatch(updateNftRequest(selectedNFT.id.toString(), payload, token));
       } else {
-        dispatch({
-          type: ADD_NFT_REQUEST,
-          payload: { collectionId, nftData: payload, token },
-        });
+        if (collectionId) {
+          dispatch(addNftRequest(collectionId, payload, token));
+        }
+      }
+
+      // Refresh the list after add/edit
+      if (collectionId) {
+        dispatch(fetchNftsRequest(collectionId));
       }
 
       handleClose();
     },
   });
 
+  useEffect(() => {
+    if (collectionId) {
+      dispatch(fetchNftsRequest(collectionId));
+    }
+  }, [dispatch, collectionId, refreshTrigger]); // Add refreshTrigger as dependency
+
   if (loading) return <p>Loading NFTs...</p>;
   if (error) return <p>Error: {error}</p>;
-  if (!Array.isArray(items) || items.length === 0) {
-    return (
-      <div>
-        <p className="text-[#DC143C] text-[32px] text-center font-800 ">
-          No NFTs found in this collection.
-        </p>
-
-        {/* 👑 Admin Add Button */}
-        {user?.role === "admin" && (
-          <div>
-            <h1 className="text-[#A7E399]  mb-5">
-              ADMIN!!! Click the button below to add new collection
-              <ArrowDownwardIcon />
-            </h1>
-            <div>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleOpen()}
-                style={{ marginBottom: "20px" }}
-                className="absolute right-10 "
-              >
-                + Add NFT
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
 
   return (
     <div>
-      <nav className="fixed z-[100] flex w-[97%] h-[65px] relative right-0 align-center py-[10px]  ">
-        <div className="header w-[98%] flex flex-row justify-between    text-[14px]  ml-[40px] ">
-          <div className=" flex flex-row    text-[14px] gap-[15px] fixed right-5  ">
-            <>
-              <Button
-                className="relative"
-                onClick={() => {
-                  navigate("/cart");
-                }}
-              >
+      {/* Navbar */}
+      <nav className="fixed z-[100] flex w-[97%] h-[65px] relative right-0 align-center py-[10px]">
+        <div className="header w-[98%] flex flex-row justify-between ml-[40px]">
+          {user?.role === "user" && (
+            <div className="flex flex-row gap-[15px] fixed right-5">
+              <Button className="relative" onClick={() => navigate("/cart")}>
                 <ShoppingCartIcon sx={{ color: "white" }} />
                 <span className="absolute bottom-0 right-[15px] text-purple-600 font-bold">
                   {cartItems.length}
                 </span>
-              </Button>{" "}
-            </>
-
-            {/* correct icon alignment*/}
-          </div>
+              </Button>
+            </div>
+          )}
         </div>
       </nav>
+
+      {/* Hero Swiper */}
       <div>
         <Swiper
           spaceBetween={0}
           slidesPerView={1}
-          autoplay={{ delay: 8000 }}
-          loop={true}
           className="custom-swiper opacity-80"
         >
           <SwiperSlide>
-            <img src={slideImage1} alt="" />
+            <img src={slideImage2} alt="" />
           </SwiperSlide>
         </Swiper>
       </div>
+
+      {/* Featured NFTs */}
       <div>
-        <div>
-          <div className="flex flex-row justify-between  items-center mt-[20px] mb-[10px] mr-[40px] ">
-            <div>
-              <h1 className="text-[25px] font-[600] ml-[40px] text-white">
-                Featured NFTs
-              </h1>
-              <span className="text-[14px] font-[500] ml-[40px] text-[#8a8b8d]">
-                This week's NFT's collections
-              </span>
-            </div>
-            {/* 👑 Admin Add Button */}
-            {user?.role === "admin" && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleOpen()}
-                style={{ marginBottom: "20px" }}
-              >
-                + Add NFT
-              </Button>
-            )}
+        <div className="flex flex-row justify-between items-center mt-[20px] mb-[10px] mr-[40px]">
+          <div>
+            <h1 className="text-[12px] md: font-[600] ml-[40px] text-white sm:text-[1rem]">
+              Featured NFTs
+            </h1>
+            <span className="text-[11px] font-[500] ml-[40px] text-[#8a8b8d]">
+              This week's NFT's collections
+            </span>
           </div>
+          {user?.role === "admin" && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleOpen()}
+              style={{ marginBottom: "20px" }}
+            >
+              + Add NFT
+            </Button>
+          )}
+        </div>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "20px",
-              flexWrap: "wrap",
-            }}
-          >
-            {items.map((nft: any) => (
-              <div
-                key={nft.id}
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "10px",
-                  width: "220px",
-                  backgroundColor: "#fff",
-                }}
-              >
-                <h3>{nft.name}</h3>
-                <img src={nft.image_url} alt={nft.name} width="200" />
-                <p>{nft.description}</p>
-                <p>
-                  <b>Price:</b> {nft.price} ETH
-                </p>
-                <p>
-                  <b>Status:</b>
-                  <span
-                    className={
-                      nft.status === "sold"
-                        ? "text-red-500 font-[600] text-[20px] ml-1"
-                        : ""
-                    }
-                  >
-                    {nft.status}
-                  </span>
-                </p>
+        {/* No NFTs state */}
+        {(!Array.isArray(items) || items.length === 0) && (
+          <div>
+            <p className="text-[#DC143C] text-[32px] text-center font-800 ">
+              No NFTs found in this collection.
+            </p>
+          </div>
+        )}
 
-                {/* 🛒 Add to Cart (only for logged-in non-admin users and if available) */}
-                {user?.role === "user" && nft.status === "available" && (
-                  <Button
-                    variant="contained"
-                    color="success"
-                    size="small"
-                    style={{ width: "100%" }}
-                    onClick={() => {
-                      dispatch({ type: "ADD_TO_CART", payload: nft });
+        {/* NFT cards */}
+        <div className="flex gap-[20px] flex-wrap mx-[40px] mb-[80px] relative">
+          {Array.isArray(items) &&
+            items
+              .filter((nft: any) => nft.status !== "sold") // hide sold NFTs
+              .map((nft: any) => (
+                <Card
+                  key={nft.id}
+                  sx={{
+                    width: 250,
+                    padding: "2px",
+                    backgroundColor: "#1e1e1e",
+                    color: "white",
+                    borderRadius: 2,
+                    boxShadow: 3,
+                  }}
+                  className=""
+                >
+                  {/* Image */}
+                  <CardMedia
+                    component="img"
+                    image={nft.image_url}
+                    alt={nft.name}
+                    className="h-[230px]"
+                  />
+
+                  {/* Content */}
+                  <CardContent className="relative">
+                    <Typography variant="h6" fontWeight={600}>
+                      {nft.name}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="gray"
+                      sx={{ overflow: "hidden" }}
+                    >
+                      {nft.description}
+                    </Typography>
+                    <Typography variant="body1" mt={1} className="">
+                      <b>Price:</b>{" "}
+                      <span className="text-[15px]">{nft.price}</span> ETH
+                    </Typography>
+                    <Typography variant="body2" mt={0.5}>
+                      <b>Status:</b>{" "}
+                      <span
+                        style={{
+                          color:
+                            nft.status === "available" ? "lightgreen" : "red",
+                          fontWeight: 600,
+                        }}
+                        className="mb-[10px]"
+                      >
+                        {nft.status}
+                      </span>
+                    </Typography>
+                  </CardContent>
+
+                  {/* Actions */}
+                  <CardActions
+                    sx={{
+                      justifyContent: "space-between",
+                      position: "relative",
+                      height: "40px",
+                      bottom: "10px",
                     }}
                   >
-                    Add to Cart
-                  </Button>
-                )}
+                    {user?.role === "user" && nft.status === "available" && (
+                      <Button
+                        variant="contained"
+                        color="success"
+                        size="small"
+                        fullWidth
+                        onClick={() => {
+                          dispatch({ type: "ADD_TO_CART", payload: nft });
+                        }}
+                      >
+                        Add to Cart
+                      </Button>
+                    )}
 
-                {/* 👑 Admin Edit/Delete */}
-                {user?.role === "admin" && (
-                  <div style={{ marginTop: "10px" }}>
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      onClick={() => handleOpen(nft)}
-                      size="small"
-                      style={{ marginRight: "5px" }}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => handleDelete(nft.id)}
-                      size="small"
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* 📝 Dialog for Add/Edit NFT */}
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>{editMode ? "Edit NFT" : "Add NFT"}</DialogTitle>
-            <form
-              onSubmit={formik.handleSubmit}
-              style={{ padding: "10px", minWidth: "400px" }}
-            >
-              <DialogContent>
-                <TextField
-                  margin="dense"
-                  label="Name"
-                  name="name"
-                  fullWidth
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.name && Boolean(formik.errors.name)}
-                  helperText={formik.touched.name && formik.errors.name}
-                />
-
-                <TextField
-                  margin="dense"
-                  label="Description"
-                  name="description"
-                  fullWidth
-                  value={formik.values.description}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={
-                    formik.touched.description &&
-                    Boolean(formik.errors.description)
-                  }
-                  helperText={
-                    formik.touched.description && formik.errors.description
-                  }
-                />
-
-                <TextField
-                  margin="dense"
-                  label="Price (ETH)"
-                  name="price"
-                  type="number"
-                  fullWidth
-                  value={formik.values.price}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.price && Boolean(formik.errors.price)}
-                  helperText={formik.touched.price && formik.errors.price}
-                />
-
-                <TextField
-                  margin="dense"
-                  label="Status"
-                  name="status"
-                  fullWidth
-                  value={formik.values.status}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.status && Boolean(formik.errors.status)}
-                  helperText={formik.touched.status && formik.errors.status}
-                />
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0] || null;
-                    setFormData({ ...formData, image: file }); // keep using your state for file
-                  }}
-                  style={{ marginTop: "10px" }}
-                />
-              </DialogContent>
-
-              <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button type="submit" variant="contained" color="primary">
-                  Save
-                </Button>
-              </DialogActions>
-            </form>{" "}
-          </Dialog>
+                    {user?.role === "admin" && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: 0,
+                          display: "flex",
+                          gap: "8px",
+                        }}
+                      >
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          size="small"
+                          className=""
+                          onClick={() => handleOpen(nft)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          size="small"
+                          onClick={() => handleDelete(nft.id)}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    )}
+                  </CardActions>
+                </Card>
+              ))}
         </div>
       </div>
+
+      {/* Dialog */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>{editMode ? "Edit NFT" : "Add NFT"}</DialogTitle>
+        <form
+          onSubmit={formik.handleSubmit}
+          style={{ padding: "10px", minWidth: "400px" }}
+        >
+          <DialogContent>
+            <TextField
+              margin="dense"
+              label="Name"
+              name="name"
+              fullWidth
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.name && Boolean(formik.errors.name)}
+              helperText={formik.touched.name && (formik.errors.name as string)}
+            />
+
+            <TextField
+              margin="dense"
+              label="Description"
+              name="description"
+              fullWidth
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.description && Boolean(formik.errors.description)
+              }
+              helperText={
+                formik.touched.description &&
+                (formik.errors.description as string)
+              }
+            />
+
+            <TextField
+              margin="dense"
+              label="Price (ETH)"
+              name="price"
+              type="number"
+              fullWidth
+              value={formik.values.price}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.price && Boolean(formik.errors.price)}
+              helperText={
+                formik.touched.price && (formik.errors.price as string)
+              }
+            />
+
+            <RadioGroup
+              row
+              name="status"
+              value={formik.values.status}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            >
+              <FormControlLabel
+                value="available"
+                control={<Radio />}
+                label="Available"
+              />
+              <FormControlLabel value="sold" control={<Radio />} label="Sold" />
+            </RadioGroup>
+
+            {formik.touched.status && formik.errors.status && (
+              <FormHelperText error>
+                {formik.errors.status as string}{" "}
+              </FormHelperText>
+            )}
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                formik.setFieldValue("image", file);
+              }}
+              className="mt-[10px] cursor-pointer"
+            />
+            {formik.touched.image && formik.errors.image && (
+              <FormHelperText error>{formik.errors.image}</FormHelperText>
+            )}
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button type="submit" variant="contained" color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
     </div>
   );
 }

@@ -28,7 +28,17 @@ def signup(
         token = create_access_token({
     "sub": str(user["id"]),
     "role": user["role"]
-})
+})      
+        return {
+            "token": token,
+            "user": {
+                "id": user["id"],
+                "username": user["username"],
+                "email": user["email"],
+                "role": user["role"],
+            },
+        }
+
 
 @router.post("/login")
 def login(email: str = Form(...), password: str = Form(...)):

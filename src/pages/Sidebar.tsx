@@ -3,18 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CollectionsIcon from "@mui/icons-material/Collections";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-
-/**
- * OpenSea-style collapsible sidebar:
- * - default: narrow (icons only)
- * - on hover: expand to show labels
- * - supports mobile toggle button
- */
-
 const navItems = [
   { id: "home", label: "Home", to: "/", Icon: HomeIcon },
   { id: "explore", label: "Explore", to: "/explore", Icon: AutoAwesomeIcon },
@@ -26,14 +16,12 @@ const navItems = [
   },
 ];
 
-const Sidebar: React.FC<{ isAdmin?: boolean }> = ({ isAdmin = false }) => {
+const Sidebar: React.FC<{ isAdmin?: boolean }> = ({}) => {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // For large screens we rely on hover to expand; mobile uses toggle
   const renderItem = (item: (typeof navItems)[0]) => {
-    if (item.adminOnly && !isAdmin) return null;
-
     const active = location.pathname === item.to;
     return (
       <Link
@@ -57,7 +45,7 @@ const Sidebar: React.FC<{ isAdmin?: boolean }> = ({ isAdmin = false }) => {
         {/* Label: hidden by default, shown on group-hover (desktop) or always on mobile open */}
         <span
           className={`whitespace-nowrap text-sm font-medium text-gray-100
-            opacity-0 translate-x-[-6px] group-hover:opacity-100 group-hover:translate-x-0
+            opacity-100 xl:opacity-0 translate-x-[-6px] group-hover:opacity-100 group-hover:translate-x-0
             transition-all duration-200 ease-out
           `}
         >
@@ -103,65 +91,23 @@ const Sidebar: React.FC<{ isAdmin?: boolean }> = ({ isAdmin = false }) => {
           <div className="px-3 py-4 flex items-center gap-3">
             <div className="w-8 h-8 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
               {/* short logo - icon */}
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M3 12h18"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
             </div>
 
             {/* Brand text - hidden until hover */}
-            <div className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <div
+              className={`ml-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-200`}
+            >
               <div className="text-sm font-semibold">OpenSea Clone</div>
               <div className="text-xs text-gray-400">Marketplace</div>
             </div>
           </div>
 
-          <nav className="mt-4 flex-1 px-2 space-y-1">
+          <nav className="mt-4  flex-1 px-2 space-y-1">
             {navItems.map(renderItem)}
           </nav>
-
-          {/* Footer / small controls */}
-          <div className="p-3">
-            <div className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-white/5">
-              <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
-                {/* user avatar placeholder */}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <circle
-                    cx="12"
-                    cy="8"
-                    r="3"
-                    stroke="white"
-                    strokeWidth="1.2"
-                  ></circle>
-                  <path
-                    d="M4 20c0-4 4-6 8-6s8 2 8 6"
-                    stroke="white"
-                    strokeWidth="1.2"
-                    strokeLinecap="round"
-                  ></path>
-                </svg>
-              </div>
-
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="text-sm font-medium">Guest</div>
-                <div className="text-xs text-gray-400">Connect wallet</div>
-              </div>
-            </div>
-          </div>
         </div>
       </aside>
 
-      {/* mobile overlay backdrop */}
       {mobileOpen && (
         <div
           onClick={() => setMobileOpen(false)}

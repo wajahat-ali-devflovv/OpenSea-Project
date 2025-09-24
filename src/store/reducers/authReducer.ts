@@ -44,6 +44,8 @@ export const authReducer = (state = initialState, action: any): AuthState => {
       return { ...state, loading: false, error: action.payload };
 
     case "LOGOUT_SUCCESS": // Add logout case
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       return {
         ...state,
         user: null,

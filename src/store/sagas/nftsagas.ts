@@ -12,6 +12,7 @@ import {
   DELETE_NFT_SUCCESS,
   DELETE_NFT_FAILURE,
 } from "../const";
+import { fetchNftsRequest } from "../actions/nftsActions";
 import { fetchNftsSuccess, fetchNftsFailure } from "../actions/nftsActions";
 function* fetchNftsSaga(action: any): any {
   try {
@@ -26,7 +27,7 @@ function* addNftSaga(action: any): any {
   try {
     const { collectionId, nftData, token } = action.payload;
     const newNFT = yield call(addNFT, collectionId, nftData, token);
-    yield put({ type: ADD_NFT_SUCCESS, payload: newNFT });
+    yield put({ type: ADD_NFT_SUCCESS, payload: newNFT }); // ✅ this is enough
   } catch (error: any) {
     yield put({ type: ADD_NFT_FAILURE, payload: error.message });
   }

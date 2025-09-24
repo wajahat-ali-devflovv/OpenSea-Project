@@ -1,44 +1,30 @@
-import React from "react";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-
 import { useDispatch, useSelector } from "react-redux";
-// import InputField from "../components/InputField";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import type { RootState } from "../store/store";
 import { loginRequest } from "../store/actions/authActions";
 import { useNavigate } from "react-router-dom";
 import { loginSchema } from "../validations/validation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
   const { loading, error, user, token } = useSelector(
     (state: RootState) => state.auth
   );
-
   useEffect(() => {
     if (user && token) {
       navigate("/"); // change "/landing" to your landing route
     }
   }, [user, token, navigate]);
-
-  const handleSignin = () => {
-    dispatch(loginRequest(email, password));
-    if (!loading && !error) {
-    }
-  };
   return (
     <div className="w-[100%] text-white h-screen flex items-center justify-center bg-[url(https://wallpapercave.com/wp/wp8616957.jpg)] ">
       {/* Glassmorphic Card */}
       <div
-        className="w-[40%] flex flex-col items-center text-[24px] 
+        className="lg:w-[40%] w-[75%] flex flex-col items-center text-[24px] 
         bg-white/10 backdrop-blur-md shadow-xl
-        border border-white/20 rounded-2xl p-10"
+        border border-white/20 rounded-2xl p-10 "
       >
         <h2 className="self-center text-[38px] font-[600] text-white">Login</h2>
         <Formik
@@ -48,7 +34,7 @@ const Login = () => {
             dispatch(loginRequest(values.email, values.password));
           }}
         >
-          {({ handleChange, values, touched, errors }) => (
+          {({ handleChange, values }) => (
             <Form className="w-[80%]">
               <label>Email:</label>
               <Field
@@ -64,7 +50,6 @@ const Login = () => {
                 component="p"
                 className="text-red-500 "
               />
-
               <label>Password :</label>
               <Field
                 as="input"
@@ -80,7 +65,6 @@ const Login = () => {
                 component="p"
                 className="text-red-500"
               />
-
               <div className="flex justify-center mt-4">
                 <button
                   type="submit"
@@ -95,7 +79,6 @@ const Login = () => {
             </Form>
           )}
         </Formik>
-
         <Button
           variant="contained"
           size="medium"
@@ -108,5 +91,4 @@ const Login = () => {
     </div>
   );
 };
-
 export default Login;

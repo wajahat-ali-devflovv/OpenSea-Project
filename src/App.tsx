@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 import Login from "./pages/Login";
@@ -18,7 +17,7 @@ function App() {
       {shouldShowSidebar && <Sidebar />}
       <div
         className={
-          shouldShowSidebar ? "ml-20 md:ml-56 transition-all duration-200" : ""
+          shouldShowSidebar ? " ml-0 md:ml-38 transition-all duration-200" : ""
         }
       >
         <Routes>
