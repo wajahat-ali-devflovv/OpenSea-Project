@@ -8,7 +8,7 @@ import { placeOrder } from "../store/api/orders"; // 👈 import new API
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const token = localStorage.getItem("token");
+  const { token } = useSelector((state: RootState) => state.auth);
 
   const handleBuy = async () => {
     try {

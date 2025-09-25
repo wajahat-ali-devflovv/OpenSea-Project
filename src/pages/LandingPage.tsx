@@ -30,7 +30,7 @@ const LandingPage = () => {
   if (loading) return <p className="text-white">Loading collections...</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
   return (
-    <div className="flex flex-col w-[100%] h-screen flex text-white  bg-[#101011]">
+    <div className="flex flex-col w-[100%] md-[98%] h-screen flex text-white  bg-[#101011]">
       <Navbar />
       <NavgationButton />
       <Carousel />

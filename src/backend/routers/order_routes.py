@@ -3,6 +3,10 @@ from database import get_connection
 from auth import oauth2_scheme, jwt, SECRET_KEY, ALGORITHM
 import psycopg2.extras
 from datetime import datetime
+from pydantic import BaseModel
+
+class OrderRequest(BaseModel):
+    nft_id: int
 
 router = APIRouter()
 
@@ -17,12 +21,12 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-# ✅ Place an order
 @router.post("/orders")
 def place_order(
-    nft_id: int = Form(...),
-    user_id: int = Depends(get_current_user)   # get from JWT
+    order: OrderRequest,
+    user_id: int = Depends(get_current_user)   # from JWT
 ):
+    nft_id = order.nft_id
     conn = get_connection()
     with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
         # 1. Check NFT availability
@@ -46,7 +50,6 @@ def place_order(
 
         # 3. Mark NFT as sold
         cur.execute("UPDATE nfts SET status=%s WHERE id=%s;", ("sold", nft_id))
-
         conn.commit()
 
     return {

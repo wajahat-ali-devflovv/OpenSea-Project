@@ -2,14 +2,13 @@ import axios from "axios";
 
 const API_BASE = "http://localhost:8000/api";
 
-// ✅ Place Order
+// ✅ Place Order with JSON
 export const placeOrder = async (nftId: string | number, token: string) => {
-  const formData = new FormData();
-  formData.append("nft_id", nftId.toString());
-
-  const res = await axios.post(`${API_BASE}/orders`, formData, {
-    headers: { Authorization: `Bearer ${token}` }, // no need for content-type, axios sets it
-  });
+  const res = await axios.post(
+    `${API_BASE}/orders`,
+    { nft_id: nftId }, // plain JSON
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
 
   return res.data;
 };

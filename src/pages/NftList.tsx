@@ -32,7 +32,6 @@ import {
   CardActions,
   Typography,
 } from "@mui/material";
-
 function NFTList() {
   //const user = JSON.parse(localStorage.getItem("user") || "{}");
   const cartItems = useSelector((state: RootState) => state.cart.items) || [0];
@@ -42,7 +41,6 @@ function NFTList() {
     (state: RootState) => state.nfts
   );
   const { user } = useSelector((state: RootState) => state.auth);
-
   const [open, setOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selectedNFT, setSelectedNFT] = useState<any>(null);
@@ -53,6 +51,7 @@ function NFTList() {
     status: "",
     image: null as File | null,
   });
+  formData;
   // Add local state to track when to refresh the list
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -210,115 +209,119 @@ function NFTList() {
         )}
 
         {/* NFT cards */}
-        <div className="flex gap-[20px] flex-wrap mx-[40px] mb-[80px] relative">
+        <div className=" nft-div flex gap-[20px] flex-wrap mx-[40px] mb-[80px] relative">
           {Array.isArray(items) &&
             items
               .filter((nft: any) => nft.status !== "sold") // hide sold NFTs
               .map((nft: any) => (
-                <Card
-                  key={nft.id}
-                  sx={{
-                    width: 250,
-                    padding: "2px",
-                    backgroundColor: "#1e1e1e",
-                    color: "white",
-                    borderRadius: 2,
-                    boxShadow: 3,
-                  }}
-                  className=""
-                >
-                  {/* Image */}
-                  <CardMedia
-                    component="img"
-                    image={nft.image_url}
-                    alt={nft.name}
-                    className="h-[230px]"
-                  />
-
-                  {/* Content */}
-                  <CardContent className="relative">
-                    <Typography variant="h6" fontWeight={600}>
-                      {nft.name}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="gray"
-                      sx={{ overflow: "hidden" }}
-                    >
-                      {nft.description}
-                    </Typography>
-                    <Typography variant="body1" mt={1} className="">
-                      <b>Price:</b>{" "}
-                      <span className="text-[15px]">{nft.price}</span> ETH
-                    </Typography>
-                    <Typography variant="body2" mt={0.5}>
-                      <b>Status:</b>{" "}
-                      <span
-                        style={{
-                          color:
-                            nft.status === "available" ? "lightgreen" : "red",
-                          fontWeight: 600,
-                        }}
-                        className="mb-[10px]"
-                      >
-                        {nft.status}
-                      </span>
-                    </Typography>
-                  </CardContent>
-
-                  {/* Actions */}
-                  <CardActions
+                <div className="relative ">
+                  <Card
+                    key={nft.id}
                     sx={{
-                      justifyContent: "space-between",
-                      position: "relative",
-                      height: "40px",
-                      bottom: "10px",
+                      width: 250,
+                      padding: "2px",
+                      backgroundColor: "#1e1e1e",
+                      color: "white",
+                      borderRadius: 2,
+                      boxShadow: 3,
+                      maxHeight: "414px",
                     }}
+                    className="card-div max:h-[414px]"
                   >
-                    {user?.role === "user" && nft.status === "available" && (
-                      <Button
-                        variant="contained"
-                        color="success"
-                        size="small"
-                        fullWidth
-                        onClick={() => {
-                          dispatch({ type: "ADD_TO_CART", payload: nft });
-                        }}
-                      >
-                        Add to Cart
-                      </Button>
-                    )}
+                    {/* Image */}
+                    <CardMedia
+                      component="img"
+                      image={nft.image_url}
+                      alt={nft.name}
+                      style={{ objectFit: "fill" }}
+                      className="h-[230px]"
+                    />
 
-                    {user?.role === "admin" && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          bottom: 0,
-                          display: "flex",
-                          gap: "8px",
-                        }}
+                    {/* Content */}
+                    <CardContent className="relative">
+                      <Typography variant="h6" fontWeight={600}>
+                        {nft.name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="gray"
+                        sx={{ overflow: "hidden" }}
                       >
-                        <Button
-                          variant="outlined"
-                          color="secondary"
-                          size="small"
-                          className=""
-                          onClick={() => handleOpen(nft)}
+                        {nft.description}
+                      </Typography>
+                      <Typography variant="body1" mt={1} className="">
+                        <b>Price:</b>{" "}
+                        <span className="text-[15px]">{nft.price}</span> ETH
+                      </Typography>
+                      <Typography variant="body2" mt={0.5}>
+                        <b>Status:</b>{" "}
+                        <span
+                          style={{
+                            color:
+                              nft.status === "available" ? "lightgreen" : "red",
+                            fontWeight: 600,
+                          }}
+                          className="mb-[10px]"
                         >
-                          Edit
-                        </Button>
+                          {nft.status}
+                        </span>
+                      </Typography>
+                    </CardContent>
+
+                    {/* Actions */}
+                    <CardActions
+                      sx={{
+                        justifyContent: "space-between",
+                        position: "relative",
+                        height: "40px",
+                        bottom: "10px",
+                      }}
+                    >
+                      {user?.role === "user" && nft.status === "available" && (
                         <Button
-                          variant="outlined"
-                          color="error"
+                          variant="contained"
+                          color="success"
                           size="small"
-                          onClick={() => handleDelete(nft.id)}
+                          fullWidth
+                          onClick={() => {
+                            dispatch({ type: "ADD_TO_CART", payload: nft });
+                          }}
                         >
-                          Delete
+                          Add to Cart
                         </Button>
-                      </div>
-                    )}
-                  </CardActions>
-                </Card>
+                      )}
+
+                      {user?.role === "admin" && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            bottom: 0,
+                            display: "flex",
+                            gap: "8px",
+                          }}
+                        >
+                          <Button
+                            variant="outlined"
+                            color="secondary"
+                            size="small"
+                            className=""
+                            onClick={() => handleOpen(nft)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            size="small"
+                            onClick={() => handleDelete(nft.id)}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      )}
+                    </CardActions>
+                  </Card>
+                </div>
               ))}
         </div>
       </div>
@@ -359,7 +362,6 @@ function NFTList() {
                 (formik.errors.description as string)
               }
             />
-
             <TextField
               margin="dense"
               label="Price (ETH)"
@@ -389,13 +391,11 @@ function NFTList() {
               />
               <FormControlLabel value="sold" control={<Radio />} label="Sold" />
             </RadioGroup>
-
             {formik.touched.status && formik.errors.status && (
               <FormHelperText error>
                 {formik.errors.status as string}{" "}
               </FormHelperText>
             )}
-
             <input
               type="file"
               accept="image/*"
@@ -421,5 +421,4 @@ function NFTList() {
     </div>
   );
 }
-
 export default NFTList;

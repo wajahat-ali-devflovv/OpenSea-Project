@@ -27,7 +27,7 @@ const Sidebar: React.FC<{ isAdmin?: boolean }> = ({}) => {
       <Link
         key={item.id}
         to={item.to}
-        className={`group flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-colors
+        className={`group flex items-center gap-3 w-auto px-3 py-2 rounded-lg transition-colors
           ${active ? "bg-white/10" : "hover:bg-white/5"}
         `}
         aria-label={item.label}

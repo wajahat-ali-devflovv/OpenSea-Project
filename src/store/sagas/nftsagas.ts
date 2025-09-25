@@ -12,7 +12,7 @@ import {
   DELETE_NFT_SUCCESS,
   DELETE_NFT_FAILURE,
 } from "../const";
-import { fetchNftsRequest } from "../actions/nftsActions";
+//import { fetchNftsRequest } from "../actions/nftsActions";
 import { fetchNftsSuccess, fetchNftsFailure } from "../actions/nftsActions";
 function* fetchNftsSaga(action: any): any {
   try {
